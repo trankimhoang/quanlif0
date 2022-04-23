@@ -32,15 +32,12 @@ Route::get('user/logout', 'Web\Auth\LoginController@logout')->name('logout_user_
 
 
 Route::prefix('sv')->name('sv.')->middleware('auth:sv')->group(function () {
-    Route::get('/index', function (){
-        print_r(\Illuminate\Support\Facades\Auth::guard('sv')->user());
-    })->name('index');
+    Route::get('/index', 'Web\SVController@index')->name('index');
+    Route::post('/index', 'Web\SVController@sendData')->name('send_data');
 });
 
 Route::prefix('gv')->name('gv.')->middleware('auth:gv')->group(function () {
-    Route::get('/index', function (){
-        print_r(\Illuminate\Support\Facades\Auth::guard('gv')->user());
-    })->name('index');
+    Route::get('/index', 'Web\GVController@index')->name('index');
 });
 
 Route::get('/', function () {

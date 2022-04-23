@@ -7,4 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class PhieuSV extends Model
 {
     protected $table = 'phieukhaibaosv';
+    public $timestamps = false;
 }

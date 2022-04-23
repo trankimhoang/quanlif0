@@ -16,4 +16,8 @@ class SV extends Authenticatable
     public function Phieu() {
         return $this->hasMany(PhieuSV::class, 'ma_sv', 'ma_sv');
     }
+
+    public function Lop() {
+        return $this->hasOne(Lop::class, 'ma_lop', 'ma_lop');
+    }
 }
