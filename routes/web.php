@@ -43,3 +43,7 @@ Route::prefix('gv')->name('gv.')->middleware('auth:gv')->group(function () {
     })->name('index');
 });
 
+
+Route::get('/', function (){
+    return redirect()->route('login_user');
+});
