@@ -77,14 +77,10 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        $this->guard()->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        if ($response = $this->loggedOut($request)) {
-            return $response;
+        if (Auth::guard('sv')->check()) {
+            Auth::guard('sv')->logout();
+        } else if (Auth::guard('gv')->check()) {
+            Auth::guard('gv')->logout();
         }
 
         return redirect()->route('login_user');
