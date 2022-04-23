@@ -31,7 +31,7 @@
                                     <tr>
                                         <td>{{ $phieu->ngay_gio_bao_benh ?? '' }}</td>
                                         <td>{{ $phieu->ngay_gio_bao_khoi ?? '' }}</td>
-                                        <td>{{ !empty($phieu->ngay_gio_bao_khoi) ? 'Đã khỏi' : 'Đang bệnh' }}</td>
+                                        <td>{!! !empty($phieu->ngay_gio_bao_khoi) ? 'Đã khỏi' : '<font color="red">Đang bệnh</font>' !!}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
