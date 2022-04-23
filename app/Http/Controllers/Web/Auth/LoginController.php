@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Web\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
@@ -31,26 +31,36 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function showLoginForm()
     {
-        $this->middleware('guest:admin')->except('logout');
+        return view('web.auth.login');
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $type = $request->get('type');
 
-        if (Auth::guard('admin')->attempt($credentials)) {
-            // Authentication passed...
-            return redirect()->route('admin.index');
+        if (!empty($type)) {
+            if ($type == 'sv') {
+                $credentials = $request->only('email', 'password');
+
+                if (Auth::guard('sv')->attempt($credentials)) {
+                    // Authentication passed...
+                    return redirect()->route('sv.index');
+                }
+
+                return redirect()->back()->withErrors(['msg' => 'Sai thông tin đăng nhập, bạn hãy thử lại']);
+            } else if ($type == 'gv') {
+                $credentials = $request->only('email', 'password');
+
+                if (Auth::guard('gv')->attempt($credentials)) {
+                    // Authentication passed...
+                    return redirect()->route('gv.index');
+                }
+
+                return redirect()->back()->withErrors(['msg' => 'Sai thông tin đăng nhập, bạn hãy thử lại']);
+            }
         }
-
-        return redirect()->back()->withErrors(['msg' => 'Sai thông tin đăng nhập, bạn hãy thử lại']);
     }
 
     public function logout(Request $request)
@@ -65,6 +75,6 @@ class LoginController extends Controller
             return $response;
         }
 
-        return redirect()->route('login_admin');
+        return redirect()->route('login');
     }
 }

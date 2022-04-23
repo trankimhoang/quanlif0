@@ -13,13 +13,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('/admin')->name('admin.')->middleware('auth')->group(function () {
-    Route::get('/index', function() {
-        return view('admin.index');
-    })->name('index'); // admin.index
+Route::prefix('/admin')->name('admin.')->middleware('auth:admin')->group(function () {
+    Route::get('/tong-quan', 'Admin\IndexController@index')->name('index'); // admin.index
+
+    Route::get('/gv', 'Admin\GVController@index')->name('gv'); // admin.index
+
+    Route::get('/sv', 'Admin\SVController@index')->name('sv'); // admin.index
 });
 
-Route::get('logout', 'Auth\LoginController@logout')->name('logout_admin_get');
 
-Auth::routes();
+Route::get('admin/login', 'Auth\LoginController@showLoginForm')->name('login_admin');
+Route::post('admin/login', 'Auth\LoginController@login')->name('login_admin');
+Route::get('admin/logout', 'Auth\LoginController@logout')->name('logout_admin_get');
+
+Route::get('user/login', 'Web\Auth\LoginController@showLoginForm')->name('login_user');
+Route::post('user/login', 'Web\Auth\LoginController@login')->name('login_user');
+Route::get('user/logout', 'Web\Auth\LoginController@logout')->name('logout_user_get');
+
+
+Route::prefix('sv')->name('sv.')->middleware('auth:sv')->group(function () {
+    Route::get('/index', function (){
+        echo 'sv';
+    })->name('index');
+});
+
+Route::prefix('gv')->name('gv.')->middleware('auth:gv')->group(function () {
+    Route::get('/index', function (){
+        echo 'gv';
+    })->name('index');
+});
 
