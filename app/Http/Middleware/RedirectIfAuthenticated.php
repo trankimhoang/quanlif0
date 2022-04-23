@@ -18,10 +18,24 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::guard($guard)->check()) {
-            return redirect(RouteServiceProvider::HOME);
-        }
+        if ($guard == 'admin') {
+            if (!Auth::guard('admin')->check()) {
+                return $next($request);
+            }
 
-        return $next($request);
+            return redirect()->route('admin.index');
+        } else if ($guard == 'sv') {
+            if (!Auth::guard('sv')->check()) {
+                return $next($request);
+            }
+
+            return redirect()->route('sv.index');
+        } else if ($guard == 'gv') {
+            if (!Auth::guard('gv')->check()) {
+                return $next($request);
+            }
+
+            return redirect()->route('gv.index');
+        }
     }
 }
