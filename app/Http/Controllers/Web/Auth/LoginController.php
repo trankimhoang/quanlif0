@@ -33,11 +33,23 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
+        if (Auth::guard('sv')->check()) {
+            return redirect()->route('sv.index');
+        } else if (Auth::guard('gv')->check()) {
+            return redirect()->route('gv.index');
+        }
+
         return view('web.auth.login');
     }
 
     public function login(Request $request)
     {
+        if (Auth::guard('sv')->check()) {
+            return redirect()->route('sv.index');
+        } else if (Auth::guard('gv')->check()) {
+            return redirect()->route('gv.index');
+        }
+
         $type = $request->get('type');
 
         if (!empty($type)) {
@@ -75,6 +87,6 @@ class LoginController extends Controller
             return $response;
         }
 
-        return redirect()->route('login');
+        return redirect()->route('login_user');
     }
 }

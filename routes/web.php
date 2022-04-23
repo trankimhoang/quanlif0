@@ -33,17 +33,16 @@ Route::get('user/logout', 'Web\Auth\LoginController@logout')->name('logout_user_
 
 Route::prefix('sv')->name('sv.')->middleware('auth:sv')->group(function () {
     Route::get('/index', function (){
-        echo 'sv';
+        print_r(\Illuminate\Support\Facades\Auth::guard('sv')->user());
     })->name('index');
 });
 
 Route::prefix('gv')->name('gv.')->middleware('auth:gv')->group(function () {
     Route::get('/index', function (){
-        echo 'gv';
+        print_r(\Illuminate\Support\Facades\Auth::guard('gv')->user());
     })->name('index');
 });
 
-
-Route::get('/', function (){
+Route::get('/', function () {
     return redirect()->route('login_user');
 });
