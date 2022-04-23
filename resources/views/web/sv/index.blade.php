@@ -5,6 +5,9 @@
 @section('content')
     <div class="container p-3">
         <h3 class="text-success text-center">Chào bạn {{ $user->ten_sv }}, dưới đây là biểu mẫu khai báo tình trạng F0</h3>
+        <div class="text-center">
+            <a class="btn btn-danger" href="{{ route('logout_user_get') }}">Đăng xuất</a>
+        </div>
         @if(session()->has('success'))
             <div class="alert alert-success">
                 {{ session()->get('success') }}
