@@ -204,16 +204,23 @@
             @if($errors->any())
                 <div class="error">{{ $errors->first() }}</div>
             @endif
-            <form class="login" method="POST" action="{{ route('login_admin') }}">
+            <form class="login" method="POST" action="{{ route('login_user') }}">
                 @csrf
                 <div class="login__field">
                     <i class="login__icon fas fa-user"></i>
-                    <input name="email" type="text" class="login__input" placeholder="Email..." value="admin@admin.com">
+                    <input name="email" type="text" class="login__input" placeholder="Email..." value="sv1@edu.vn">
                 </div>
                 <div class="login__field">
                     <i class="login__icon fas fa-lock"></i>
                     <input name="password" type="password" class="login__input" placeholder="Password..."
-                           value="admin123">
+                           value="123">
+                </div>
+                <div class="login__field">
+                    <i class="login__icon fas fa-lock"></i>
+                    <select name="type">
+                        <option value="sv">SV</option>
+                        <option value="gv">GV</option>
+                    </select>
                 </div>
                 <button class="button login__submit">
                     <span class="button__text">Đăng nhập</span>

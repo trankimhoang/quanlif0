@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAdminsTable extends Migration
+class AddEmailPasswordToSinhvienTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateAdminsTable extends Migration
      */
     public function up()
     {
-        Schema::create('phongdaotao', function (Blueprint $table) {
-            $table->id();
+        Schema::table('sinhvien', function (Blueprint $table) {
             $table->string('email');
-            $table->string('name');
             $table->string('password');
-            $table->timestamps();
+            $table->unsignedInteger('ma_lop')->nullable();
+            $table->foreign('ma_lop')->references('ma_lop')->on('lop');
         });
     }
 
@@ -29,6 +28,8 @@ class CreateAdminsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('phongdaotao');
+        Schema::table('sinhvien', function (Blueprint $table) {
+            //
+        });
     }
 }
