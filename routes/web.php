@@ -13,14 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('/admin')->group(function () {
-   
-
+Route::prefix('/admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/index', function() {
         return view('admin.index');
-    });
+    })->name('index'); // admin.index
 });
+
+Route::get('logout', 'Auth\LoginController@logout')->name('logout_admin_get');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
