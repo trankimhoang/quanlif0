@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <h1>Danh sách sinh viên</h1>
+                <h3>Danh sách sinh viên</h3>
                 <div id="div_sinhvien_loading" style="display: none;" class="spinner-border mb-2" role="status"> <span class="sr-only">Loading...</span> </div>
                 <div id="div_sinhvien" class="mb-2">
                     @if(count($lop->SV) > 0)
@@ -63,11 +63,11 @@
                             @include('admin.lop_online.ajax.sinhvien_row', compact('sv'))
                         @endforeach
                     @else
-                        <p class="alert alert-danger" id="sv_alert_not_found">Lớp không có sinh vien</p>
+                        <p class="alert alert-danger" id="sv_alert_not_found">Lớp không có sinh viên</p>
                     @endif
                 </div>
-                <div class="row">
-                    <div class="col-md-9">
+                <div class="row mb-5">
+                    <div class="col-md-8">
                         <div class="form-group">
                             <select id="select_sv" class="select-search form-control form-select">
                                 @foreach($listSV as $sv)
@@ -77,9 +77,39 @@
                         </div>
 
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <button class="btn btn-primary w-100" id="btn-add-sv" type="button">Thêm sinh viên</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <h3 class="mt-5">Danh sách giảng viên</h3>
+                <div id="div_giangvien_loading" style="display: none;" class="spinner-border mb-2" role="status"> <span class="sr-only">Loading...</span> </div>
+                <div id="div_giangvien" class="mb-2">
+                    @if(count($lop->GV) > 0)
+                        @foreach($lop->GV as $gv)
+                            @include('admin.lop_online.ajax.giangvien_row', compact('gv'))
+                        @endforeach
+                    @else
+                        <p class="alert alert-danger" id="gv_alert_not_found">Lớp không có giảng viên</p>
+                    @endif
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <select id="select_gv" class="select-search form-control form-select">
+                                @foreach($listGV as $gv)
+                                    <option value="{{ $gv->ma_gv }}">#{{ $gv->ma_gv }} - {{ $gv->ten_gv }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <button class="btn btn-primary w-100" id="btn-add-gv" type="button">Thêm giảng viên</button>
                         </div>
                     </div>
                 </div>
@@ -116,7 +146,24 @@
                 })
             });
 
-            $( "#select_sv" ).select2({
+            $('body').on('click', '.btn-remove-gv', function (){
+                let id = $(this).attr('data-id');
+                $(this).parent().remove();
+
+                $.ajax({
+                    url: @json(route('admin.ql_lop.remove_gv')),
+                    data: {
+                        ma_lop_mh: @json($lop->ma_lop_mh),
+                        ma_gv: id
+                    },
+                    method: 'GET',
+                    success: function () {
+
+                    }
+                })
+            });
+
+            $("#select_sv, #select_gv").select2({
                 theme: "bootstrap"
             });
 
@@ -135,10 +182,43 @@
                     },
                     method: 'GET',
                     success: function (data) {
-                        $('#div_sinhvien').append(data);
                         $('#div_sinhvien_loading').hide();
                         $('#div_sinhvien').show();
                         $('#btn-add-sv').prop('disabled', false);
+
+                        if (data.success == '1') {
+                            $('#div_sinhvien').append(data.html);
+                        } else {
+                            alert(data.mgs);
+                        }
+                    }
+                });
+            });
+
+            $('#btn-add-gv').click(function (){
+                let id = $('#select_gv option:selected').val();
+                $('#div_giangvien').hide();
+                $('#div_giangvien_loading').show();
+                $(this).prop('disabled', true);
+                $('#gv_alert_not_found').remove();
+
+                $.ajax({
+                    url: @json(route('admin.ql_lop.add_gv')),
+                    data: {
+                        ma_lop_mh: @json($lop->ma_lop_mh),
+                        ma_gv: id
+                    },
+                    method: 'GET',
+                    success: function (data) {
+                        $('#div_giangvien_loading').hide();
+                        $('#div_giangvien').show();
+                        $('#btn-add-gv').prop('disabled', false);
+
+                        if (data.success == '1') {
+                            $('#div_giangvien').append(data.html);
+                        } else {
+                            alert(data.mgs);
+                        }
                     }
                 });
             });

@@ -20,4 +20,17 @@ class SV extends Authenticatable
     public function Lop() {
         return $this->hasOne(Lop::class, 'ma_lop', 'ma_lop');
     }
+
+    public function isBenh() {
+        $isBenh = false;
+
+        foreach ($this->Phieu as $item) {
+            if (empty($item->ngay_gio_bao_khoi)) {
+                $isBenh = true;
+                break;
+            }
+        }
+
+        return $isBenh;
+    }
 }
