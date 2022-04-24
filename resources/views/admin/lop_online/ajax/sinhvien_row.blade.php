@@ -6,7 +6,6 @@
     </button>
     <input type="hidden"
            class="sv"
-           data-is-old="1"
            name="sv[]"
            value="{{ $sv->ma_sv }}" data-id="{{ $sv->ma_sv }}">
 </div>

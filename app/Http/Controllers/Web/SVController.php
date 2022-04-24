@@ -7,6 +7,7 @@ use App\Models\PhieuSV;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SVController extends Controller
 {
@@ -17,14 +18,24 @@ class SVController extends Controller
     }
 
     public function sendData(Request $request) {
-        $dateTimeF0 = $request->get('ngay_gio_bao_benh') ?? null;
+        $ngayBaoBenh = $request->get('ngay_gio_bao_benh') ?? null;
+        $ngayKhoiBenh = $request->get('ngay_gio_bao_khoi') ?? null;
         $user = Auth::guard('sv')->user();
 
         try {
-            $phieuBaoBenh = new PhieuSV();
-            $phieuBaoBenh->ngay_gio_bao_benh = $dateTimeF0;
-            $phieuBaoBenh->ma_sv = $user->ma_sv;
-            $phieuBaoBenh->save();
+            if (!empty($ngayBaoBenh)) {
+                $phieuBaoBenh = new PhieuSV();
+                $phieuBaoBenh->ngay_gio_bao_benh = $ngayBaoBenh;
+                $phieuBaoBenh->ma_sv = $user->ma_sv;
+                $phieuBaoBenh->save();
+            } else if (!empty($ngayKhoiBenh)) {
+                DB::table('phieukhaibaosv')
+                    ->where('ma_sv', $user->ma_sv)
+                    ->where('ngay_gio_bao_khoi', '=', null)
+                    ->update([
+                        'ngay_gio_bao_khoi' => $ngayKhoiBenh
+                    ]);
+            }
         } catch (\Exception $exception) {
             throw $exception;
         }

@@ -27,6 +27,9 @@ Route::prefix('/admin')->name('admin.')->middleware('auth:admin')->group(functio
 
     Route::get('/ajax-add-sinhvien-vao-lop', 'Admin\QuanLiLopOnlineController@addSinhVien')->name('ql_lop.add_sv');
     Route::get('/ajax-remove-sinhvien-vao-lop', 'Admin\QuanLiLopOnlineController@removeSinhVien')->name('ql_lop.remove_sv');
+
+    Route::get('/ajax-add-giangvien-vao-lop', 'Admin\QuanLiLopOnlineController@addGiangVien')->name('ql_lop.add_gv');
+    Route::get('/ajax-remove-giangvien-vao-lop', 'Admin\QuanLiLopOnlineController@removeGiangVien')->name('ql_lop.remove_gv');
 });
 
 

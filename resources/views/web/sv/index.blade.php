@@ -27,11 +27,17 @@
                 <label for="class">Lớp</label>
                 <input type="text" class="form-control" id="class" value="{{ $user->Lop->ten_lop }}" readonly>
             </div>
-            <div class="form-group">
-                <label for="date_f0">Ngày bị</label>
-                <input type="datetime-local" class="form-control" id="date_f0" name="ngay_gio_bao_benh" required>
-            </div>
-
+            @if(!$user->isBenh())
+                <div class="form-group">
+                    <label for="date_f0">Ngày bị</label>
+                    <input type="datetime-local" class="form-control" id="date_f0" name="ngay_gio_bao_benh" required>
+                </div>
+            @else
+                <div class="form-group">
+                    <label for="ngay_gio_bao_khoi">Ngày khỏi</label>
+                    <input type="datetime-local" class="form-control" id="ngay_gio_bao_khoi" name="ngay_gio_bao_khoi" required>
+                </div>
+            @endif
             <button type="submit" class="btn btn-primary">Gửi</button>
         </form>
     </div>

@@ -16,4 +16,17 @@ class GV extends Authenticatable
     public function Phieu() {
         return $this->hasMany(PhieuGV::class, 'ma_gv', 'ma_gv');
     }
+
+    public function isBenh() {
+        $isBenh = false;
+
+        foreach ($this->Phieu as $item) {
+            if (empty($item->ngay_gio_bao_khoi)) {
+                $isBenh = true;
+                break;
+            }
+        }
+
+        return $isBenh;
+    }
 }

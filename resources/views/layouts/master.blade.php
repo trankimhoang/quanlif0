@@ -89,6 +89,12 @@
                             @else
                                 <option value="{{ route('admin.gv') }}">GV</option>
                             @endif
+
+                            @if(\Request::route()->getName() == 'admin.ql_lop')
+                                <option selected value="{{ route('admin.ql_lop') }}">Lớp online</option>
+                            @else
+                                <option value="{{ route('admin.ql_lop') }}">Lớp online</option>
+                            @endif
                         </select>
                         <div class="input-group-append">
                             <button class="btn btn-primary" type="button" id="btn_search">
