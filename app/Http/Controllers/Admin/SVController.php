@@ -10,7 +10,12 @@ use Illuminate\Http\Request;
 class SVController extends Controller
 {
     public function index(Request $request){
-        $listSV = SV::with('Phieu')->whereHas('Phieu')->paginate(5);
+        $searchTxt = $request->get('search') ?? null;
+        $listSV = SV::with('Phieu')
+            ->where(function ($query) use ($searchTxt) {
+                $query->where('ten_sv', 'like', '%' . $searchTxt . '%')
+                    ->orWhere('email', 'like', '%' . $searchTxt . '%');
+            })->whereHas('Phieu')->paginate(5);
 
         return view('admin.sv.index', compact('listSV'));
     }

@@ -16,9 +16,17 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/admin')->name('admin.')->middleware('auth:admin')->group(function () {
     Route::get('/tong-quan', 'Admin\IndexController@index')->name('index'); // admin.index
 
-    Route::get('/gv', 'Admin\GVController@index')->name('gv'); // admin.index
+    Route::get('/gv', 'Admin\GVController@index')->name('gv'); // admin.gv
 
-    Route::get('/sv', 'Admin\SVController@index')->name('sv'); // admin.index
+    Route::get('/sv', 'Admin\SVController@index')->name('sv'); // admin.sv
+
+    Route::get('/quan-li-lop-online', 'Admin\QuanLiLopOnlineController@index')->name('ql_lop');
+    Route::post('/xoa-lop-online', 'Admin\QuanLiLopOnlineController@removeLop')->name('ql_lop.xoa');
+    Route::get('/chinh-sua-lop-online', 'Admin\QuanLiLopOnlineController@detailLop')->name('ql_lop.chinh_sua');
+    Route::post('/chinh-sua-lop-online', 'Admin\QuanLiLopOnlineController@updateLop')->name('ql_lop.chinh_sua_post');
+
+    Route::get('/ajax-add-sinhvien-vao-lop', 'Admin\QuanLiLopOnlineController@addSinhVien')->name('ql_lop.add_sv');
+    Route::get('/ajax-remove-sinhvien-vao-lop', 'Admin\QuanLiLopOnlineController@removeSinhVien')->name('ql_lop.remove_sv');
 });
 
 

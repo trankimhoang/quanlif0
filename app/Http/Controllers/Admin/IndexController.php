@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\GV;
 use App\Models\PhieuGV;
 use App\Models\PhieuSV;
+use App\Models\SV;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\GV;
+use Illuminate\Support\Facades\Mail;
 
 class IndexController extends Controller
 {
@@ -18,21 +20,25 @@ class IndexController extends Controller
         // gv
         $dataIndex[] = [
             'title' => 'GV da bi f0 tu truoc toi gio',
-            'count' => PhieuGV::all()->count()
+            'count' => GV::has('Phieu')->get()->count()
         ];
         $dataIndex[] = [
             'title' => 'GV da bi f0 trong thang nay',
-            'count' =>  PhieuGV::whereMonth('ngay_gio_bao_benh', '=', $monthNow)->count()
+            'count' => GV::has('Phieu')->whereHas('Phieu', function ($query) use ($monthNow) {
+                $query->whereMonth('ngay_gio_bao_benh', '=', $monthNow);
+            })->get()->count()
         ];
 
         // sv
         $dataIndex[] = [
             'title' => 'SV da bi f0 tu truoc toi gio',
-            'count' => PhieuSV::all()->count()
+            'count' => SV::has('Phieu')->get()->count()
         ];
         $dataIndex[] = [
             'title' => 'SV da bi f0 trong thang nay',
-            'count' =>  PhieuSV::whereMonth('ngay_gio_bao_benh', '=', $monthNow)->count()
+            'count' => SV::has('Phieu')->whereHas('Phieu', function ($query) use ($monthNow) {
+                $query->whereMonth('ngay_gio_bao_benh', '=', $monthNow);
+            })->get()->count()
         ];
 
         return view('admin.index', compact('dataIndex'));
