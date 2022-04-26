@@ -19,11 +19,11 @@ class IndexController extends Controller
 
         // gv
         $dataIndex[] = [
-            'title' => 'GV da bi f0 tu truoc toi gio',
+            'title' => 'GV đã bị F0 từ trước đến giờ',
             'count' => GV::has('Phieu')->get()->count()
         ];
         $dataIndex[] = [
-            'title' => 'GV da bi f0 trong thang nay',
+            'title' => 'GV đã bị F0 trong tháng này',
             'count' => GV::has('Phieu')->whereHas('Phieu', function ($query) use ($monthNow) {
                 $query->whereMonth('ngay_gio_bao_benh', '=', $monthNow);
             })->get()->count()
@@ -31,11 +31,11 @@ class IndexController extends Controller
 
         // sv
         $dataIndex[] = [
-            'title' => 'SV da bi f0 tu truoc toi gio',
+            'title' => 'SV đã bị F0 từ trước đến giờ',
             'count' => SV::has('Phieu')->get()->count()
         ];
         $dataIndex[] = [
-            'title' => 'SV da bi f0 trong thang nay',
+            'title' => 'SV đã bị F0 trong tháng này',
             'count' => SV::has('Phieu')->whereHas('Phieu', function ($query) use ($monthNow) {
                 $query->whereMonth('ngay_gio_bao_benh', '=', $monthNow);
             })->get()->count()
