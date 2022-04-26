@@ -49,6 +49,7 @@ Route::prefix('sv')->name('sv.')->middleware('auth:sv')->group(function () {
 
 Route::prefix('gv')->name('gv.')->middleware('auth:gv')->group(function () {
     Route::get('/index', 'Web\GVController@index')->name('index');
+    Route::post('/index', 'Web\GVController@sendData')->name('send_data');
 });
 
 Route::get('/', function () {
