@@ -17,7 +17,7 @@
                 @csrf
                 <input type="hidden" name="ma_lop_mh" value="{{ $lop->ma_lop_mh }}">
                 <div class="form-group">
-                    <label for="id_zoom">Id zoom</label>
+                    <label for="id_zoom">ID Zoom</label>
                     <input type="text" class="form-control" name="id_zoom" value="{{ $lop->id_zoom }}">
                 </div>
                 <div class="form-group">

@@ -42,6 +42,7 @@ class QuanLiLopOnlineController extends Controller
         unset($dataUpdate['_token']);
         unset($dataUpdate['ma_lop_mh']);
         unset($dataUpdate['sv']);
+        unset($dataUpdate['gv']);
 
         foreach ($svLopMh as $key => $item) {
             $svLopMh[$key] = [

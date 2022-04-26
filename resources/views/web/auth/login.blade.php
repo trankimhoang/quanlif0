@@ -218,8 +218,8 @@
                 <div class="login__field">
                     <i class="login__icon fas fa-lock"></i>
                     <select name="type">
-                        <option value="sv">SV</option>
-                        <option value="gv">GV</option>
+                        <option value="sv">Sinh viên</option>
+                        <option value="gv">Giảng viên</option>
                     </select>
                 </div>
                 <button class="button login__submit">

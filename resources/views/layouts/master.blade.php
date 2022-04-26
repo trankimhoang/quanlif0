@@ -80,20 +80,20 @@
                                aria-describedby="basic-addon2">
                         <select name="select_search" id="select_search" class="form-control bg-light border-0 small">
                             @if(\Request::route()->getName() == 'admin.sv')
-                                <option selected value="{{ route('admin.sv') }}">SV</option>
+                                <option selected value="{{ route('admin.sv') }}">Sinh viên</option>
                             @else
-                                <option value="{{ route('admin.sv') }}">SV</option>
+                                <option value="{{ route('admin.sv') }}">Sinh viên</option>
                             @endif
                             @if(\Request::route()->getName() == 'admin.gv')
-                                <option selected value="{{ route('admin.gv') }}">GV</option>
+                                <option selected value="{{ route('admin.gv') }}">Giảng viên</option>
                             @else
-                                <option value="{{ route('admin.gv') }}">GV</option>
+                                <option value="{{ route('admin.gv') }}">Giảng viên</option>
                             @endif
 
                             @if(\Request::route()->getName() == 'admin.ql_lop')
-                                <option selected value="{{ route('admin.ql_lop') }}">Lớp online</option>
+                                <option selected value="{{ route('admin.ql_lop') }}">Lớp Online</option>
                             @else
-                                <option value="{{ route('admin.ql_lop') }}">Lớp online</option>
+                                <option value="{{ route('admin.ql_lop') }}">Lớp Online</option>
                             @endif
                         </select>
                         <div class="input-group-append">
