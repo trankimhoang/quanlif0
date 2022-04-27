@@ -2,12 +2,12 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>Mã GV</th>
-            <th>Tên GV</th>
-            <th>Hình thức phân công</th>
-            <th>Từ ngày</th>
-            <th>Đến ngày</th>
-            <th>Xóa</th>
+            <th nowrap>Mã GV</th>
+            <th nowrap>Tên GV</th>
+            <th nowrap>Hình thức phân công</th>
+            <th nowrap>Từ ngày</th>
+            <th nowrap>Đến ngày</th>
+            <th nowrap>Xóa</th>
         </tr>
         </thead>
         <tbody>

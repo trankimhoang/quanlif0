@@ -144,7 +144,7 @@
                                             <tr>
                                                 <td
                                                     style="padding: 10px; border-bottom: 1px solid #ededed;border-right: 1px solid #ededed; width: 35%; font-weight:500; color:rgba(0,0,0,.64)">
-                                                    Hình thức
+                                                    Từ ngày
                                                 </td>
                                                 <td
                                                     style="padding: 10px; border-bottom: 1px solid #ededed; color: #455056;">
@@ -156,7 +156,7 @@
                                             <tr>
                                                 <td
                                                     style="padding: 10px; border-bottom: 1px solid #ededed;border-right: 1px solid #ededed; width: 35%; font-weight:500; color:rgba(0,0,0,.64)">
-                                                    Hình thức
+                                                    Đến ngày
                                                 </td>
                                                 <td
                                                     style="padding: 10px; border-bottom: 1px solid #ededed; color: #455056;">
