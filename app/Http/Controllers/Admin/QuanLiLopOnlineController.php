@@ -178,7 +178,7 @@ class QuanLiLopOnlineController extends Controller
             $arraySendMail = ['lop' => $lop,
                 'title' => 'Bạn đã được phân công dạy lớp bên dưới',
                 'hinhthuc' => $maToTenHt[$request->get('ma_ht')],
-                'tungay' => $tuNgaySend, 'denngay' => $tuNgaySend
+                'tungay' => $tuNgaySend, 'denngay' => $denNgaySend
             ];
 
             @Mail::send('email_template.giangvien', $arraySendMail, function ($message) use ($gv) {
@@ -199,7 +199,7 @@ class QuanLiLopOnlineController extends Controller
             $arraySendMail = ['lop' => $lop,
                 'title' => 'Lịch phân công dạy của bạn đã bị thay đổi (Cập nhật hình thức dạy)',
                 'hinhthuc' => $maToTenHt[$request->get('ma_ht')],
-                'tungay' => $tuNgaySend, 'denngay' => $tuNgaySend
+                'tungay' => $tuNgaySend, 'denngay' => $denNgaySend
             ];
 
             @Mail::send('email_template.giangvien', $arraySendMail, function ($message) use ($gv) {

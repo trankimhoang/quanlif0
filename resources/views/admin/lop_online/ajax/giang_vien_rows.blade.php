@@ -13,12 +13,12 @@
         <tbody>
         @foreach($gvs as $gv)
             <tr>
-                <td>{{ $gv->ma_gv }}</td>
-                <td>{{ $gv->ten_gv }}</td>
-                <td>{{ $maToTenHt[$gv->pivot->ma_ht] ?? '' }}</td>
-                <td>{{ \Illuminate\Support\Carbon::parse($gv->pivot->tu_ngay)->format('d-m-Y') }}</td>
-                <td>{{ \Illuminate\Support\Carbon::parse($gv->pivot->den_ngay)->format('d-m-Y') }}</td>
-                <td>
+                <td nowrap>{{ $gv->ma_gv }}</td>
+                <td nowrap>{{ $gv->ten_gv }}</td>
+                <td nowrap>{{ $maToTenHt[$gv->pivot->ma_ht] ?? '' }}</td>
+                <td nowrap>{{ \Illuminate\Support\Carbon::parse($gv->pivot->tu_ngay)->format('d-m-Y') }}</td>
+                <td nowrap>{{ \Illuminate\Support\Carbon::parse($gv->pivot->den_ngay)->format('d-m-Y') }}</td>
+                <td nowrap>
                     <button data-id="{{ $gv->ma_gv }}" class="btn btn-danger btn-circle btn-sm btn-remove-gv"
                             type="button">
                         <i class="fas fa-trash"></i>
