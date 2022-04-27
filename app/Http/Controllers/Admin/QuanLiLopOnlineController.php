@@ -232,17 +232,39 @@ class QuanLiLopOnlineController extends Controller
     {
         $gv = GV::where('ma_gv', $request->get('ma_gv'))->first() ?? null;
         $lop = LopMonHoc::where('ma_lop_mh', $request->get('ma_lop_mh'))->first() ?? null;
+        $maToTenHt = DB::table('hinhthucday')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->ma_ht => $item->ten_ht];
+            })->toArray();
 
-        DB::table('gvlopmh')
-            ->where('ma_gv', $gv->ma_gv)
-            ->where('ma_lop_mh', $lop->ma_lop_mh)
-            ->delete();
         DB::table('gvlopmhhinhthucday')
             ->where('ma_gv', $gv->ma_gv)
             ->where('ma_lop_mh', $lop->ma_lop_mh)
+            ->where('ma_ht', $request->get('ma_ht'))
             ->delete();
 
-        Mail::send('email_template.giangvien', array('lop' => $lop, 'title' => 'Bạn đã bị xóa khỏi phân công của lớp bên dưới'), function ($message) use ($gv) {
+        $checkExistsHinhThuc = DB::table('gvlopmhhinhthucday')
+            ->where('ma_gv', $gv->ma_gv)
+            ->where('ma_lop_mh', $lop->ma_lop_mh)
+            ->exists();
+
+        if (!$checkExistsHinhThuc) {
+            DB::table('gvlopmh')
+                ->where('ma_gv', $gv->ma_gv)
+                ->where('ma_lop_mh', $lop->ma_lop_mh)
+                ->delete();
+        }
+
+        $arraySendMail = [
+            'lop' => $lop,
+            'title' => 'Bạn đã bị xóa khỏi phân công của lớp bên dưới',
+            'hinhthuc' => $maToTenHt[$request->get('ma_ht')],
+            'tungay' => $request->get('tu_ngay'),
+            'denngay' => $request->get('den_ngay'),
+        ];
+
+        @Mail::send('email_template.giangvien', $arraySendMail, function ($message) use ($gv) {
             $message->to($gv->email, '')->subject('Thông báo phân công lớp học online - ' . env('APP_NAME', ''));
         });
     }

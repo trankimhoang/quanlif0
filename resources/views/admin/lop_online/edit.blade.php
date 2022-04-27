@@ -172,7 +172,10 @@
                     url: @json(route('admin.ql_lop.remove_gv')),
                     data: {
                         ma_lop_mh: @json($lop->ma_lop_mh),
-                        ma_gv: id
+                        ma_gv: id,
+                        ma_ht: $(this).attr('data-ma-ht'),
+                        tu_ngay: $(this).attr('data-tu-ngay'),
+                        den_ngay: $(this).attr('data-den-ngay')
                     },
                     method: 'GET',
                     success: function () {

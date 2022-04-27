@@ -19,7 +19,11 @@
                 <td nowrap>{{ \Illuminate\Support\Carbon::parse($gv->pivot->tu_ngay)->format('d-m-Y') }}</td>
                 <td nowrap>{{ \Illuminate\Support\Carbon::parse($gv->pivot->den_ngay)->format('d-m-Y') }}</td>
                 <td nowrap>
-                    <button data-id="{{ $gv->ma_gv }}" class="btn btn-danger btn-circle btn-sm btn-remove-gv"
+                    <button data-id="{{ $gv->ma_gv }}"
+                            data-ma-ht="{{ $gv->pivot->ma_ht }}"
+                            data-tu-ngay="{{ \Illuminate\Support\Carbon::parse($gv->pivot->tu_ngay)->format('d-m-Y') }}"
+                            data-den-ngay="{{ \Illuminate\Support\Carbon::parse($gv->pivot->den_ngay)->format('d-m-Y') }}"
+                            class="btn btn-danger btn-circle btn-sm btn-remove-gv"
                             type="button">
                         <i class="fas fa-trash"></i>
                     </button>
