@@ -128,16 +128,43 @@
                                             </td>
 
                                         </tr>
-                                        <tr>
-                                            <td
-                                                style="padding: 10px; border-bottom: 1px solid #ededed;border-right: 1px solid #ededed; width: 35%; font-weight:500; color:rgba(0,0,0,.64)">
-                                                Hình thức
-                                            </td>
-                                            <td
-                                                style="padding: 10px; border-bottom: 1px solid #ededed; color: #455056;">
-                                                {{ $hinhthuc }}
-                                            </td>
-                                        </tr>
+                                        @if(!empty($hinhthuc))
+                                            <tr>
+                                                <td
+                                                    style="padding: 10px; border-bottom: 1px solid #ededed;border-right: 1px solid #ededed; width: 35%; font-weight:500; color:rgba(0,0,0,.64)">
+                                                    Hình thức
+                                                </td>
+                                                <td
+                                                    style="padding: 10px; border-bottom: 1px solid #ededed; color: #455056;">
+                                                    {{ $hinhthuc }}
+                                                </td>
+                                            </tr>
+                                        @endif
+                                        @if(!empty($tungay))
+                                            <tr>
+                                                <td
+                                                    style="padding: 10px; border-bottom: 1px solid #ededed;border-right: 1px solid #ededed; width: 35%; font-weight:500; color:rgba(0,0,0,.64)">
+                                                    Hình thức
+                                                </td>
+                                                <td
+                                                    style="padding: 10px; border-bottom: 1px solid #ededed; color: #455056;">
+                                                    {{ $tungay }}
+                                                </td>
+                                            </tr>
+                                        @endif
+                                        @if(!empty($denngay))
+                                            <tr>
+                                                <td
+                                                    style="padding: 10px; border-bottom: 1px solid #ededed;border-right: 1px solid #ededed; width: 35%; font-weight:500; color:rgba(0,0,0,.64)">
+                                                    Hình thức
+                                                </td>
+                                                <td
+                                                    style="padding: 10px; border-bottom: 1px solid #ededed; color: #455056;">
+                                                    {{ $denngay }}
+                                                </td>
+                                            </tr>
+                                        @endif
+
                                         </tbody>
                                     </table>
                                 </td>

@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Mail;
 
 class QuanLiLopOnlineController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $searchTxt = $request->get('search') ?? null;
         $listLop = LopMonHoc::with(['GV', 'MonHoc'])
             ->where(function ($query) use ($searchTxt) {
@@ -27,22 +28,24 @@ class QuanLiLopOnlineController extends Controller
         return view('admin.lop_online.index', compact('listLop'));
     }
 
-    public function detailLop(Request $request) {
-        $lop =  LopMonHoc::with(['GV', 'MonHoc', 'SV', 'GVHinhThucDay'])->where('ma_lop_mh', $request->get('ma_lop_mh'))->first();
+    public function detailLop(Request $request)
+    {
+        $lop = LopMonHoc::with(['GV', 'MonHoc', 'SV', 'GVHinhThucDay'])->where('ma_lop_mh', $request->get('ma_lop_mh'))->first();
         $listMonHoc = MonHoc::all();
         $listSV = SV::all();
         $listGV = GV::all();
         $listHt = HinhThucDay::all();
         $maToTenHt = DB::table('hinhthucday')
             ->get()
-            ->mapWithKeys(function ($item){
+            ->mapWithKeys(function ($item) {
                 return [$item->ma_ht => $item->ten_ht];
             })->toArray();
 
         return view('admin.lop_online.edit', compact('lop', 'listMonHoc', 'listSV', 'listGV', 'listHt', 'maToTenHt'));
     }
 
-    public function updateLop(Request $request) {
+    public function updateLop(Request $request)
+    {
         $dataUpdate = $request->toArray();
         $maLopMh = $request->get('ma_lop_mh') ?? null;
         $svLopMh = $request->get('sv') ?? null;
@@ -74,11 +77,13 @@ class QuanLiLopOnlineController extends Controller
         }
     }
 
-    public function addLop(Request $request) {
+    public function addLop(Request $request)
+    {
 
     }
 
-    public function removeLop(Request $request) {
+    public function removeLop(Request $request)
+    {
         $maLop = $request->get('ma_lop_mh');
 
         try {
@@ -92,13 +97,14 @@ class QuanLiLopOnlineController extends Controller
                 ->where('ma_lop_mh', $maLop)
                 ->delete();
 
-            return redirect()->back()->with(['success' => 'Xóa thành công lớp ['. $maLop . ']']);
+            return redirect()->back()->with(['success' => 'Xóa thành công lớp [' . $maLop . ']']);
         } catch (\Exception $exception) {
             throw $exception;
         }
     }
 
-    public function addSinhVien(Request $request) {
+    public function addSinhVien(Request $request)
+    {
         $sv = SV::where('ma_sv', $request->get('ma_sv'))->first() ?? null;
         $lop = LopMonHoc::where('ma_lop_mh', $request->get('ma_lop_mh'))->first() ?? null;
         $arrayInsert = [
@@ -115,7 +121,7 @@ class QuanLiLopOnlineController extends Controller
             DB::table('svlopmonhoc')
                 ->insert($arrayInsert);
 
-            Mail::send('email_template.sinhvien', array('lop' => $lop, 'title' => 'Bạn đã được thêm vào lớp học bên dưới'), function($message) use ($sv) {
+            Mail::send('email_template.sinhvien', array('lop' => $lop, 'title' => 'Bạn đã được thêm vào lớp học bên dưới'), function ($message) use ($sv) {
                 $message->to($sv->email, '')->subject('Thông báo lớp học online - ' . env('APP_NAME', ''));
             });
 
@@ -125,10 +131,11 @@ class QuanLiLopOnlineController extends Controller
         }
     }
 
-    public function addGiangVien(Request $request) {
+    public function addGiangVien(Request $request)
+    {
         $maToTenHt = DB::table('hinhthucday')
             ->get()
-            ->mapWithKeys(function ($item){
+            ->mapWithKeys(function ($item) {
                 return [$item->ma_ht => $item->ten_ht];
             })->toArray();
 
@@ -140,6 +147,8 @@ class QuanLiLopOnlineController extends Controller
         ];
         $tuNgay = $request->get('tu_ngay');
         $denNgay = $request->get('den_ngay');
+        $tuNgaySend = $request->get('tu_ngay');
+        $denNgaySend = $request->get('den_ngay');
 
         $tuNgay = \Carbon\Carbon::createFromFormat('d/m/Y', $tuNgay)->format('Y-m-d');
         $denNgay = \Carbon\Carbon::createFromFormat('d/m/Y', $denNgay)->format('Y-m-d');
@@ -166,7 +175,13 @@ class QuanLiLopOnlineController extends Controller
             DB::table('gvlopmh')
                 ->insert($arrayInsert);
 
-            @Mail::send('email_template.giangvien', array('lop' => $lop, 'title' => 'Bạn đã được phân công dạy lớp bên dưới', 'hinhthuc' => $maToTenHt[$request->get('ma_ht')]), function($message) use ($gv) {
+            $arraySendMail = ['lop' => $lop,
+                'title' => 'Bạn đã được phân công dạy lớp bên dưới',
+                'hinhthuc' => $maToTenHt[$request->get('ma_ht')],
+                'tungay' => $tuNgaySend, 'denngay' => $tuNgaySend
+            ];
+
+            @Mail::send('email_template.giangvien', $arraySendMail, function ($message) use ($gv) {
                 $message->to($gv->email, '')->subject('Thông báo phân công lớp học online - ' . env('APP_NAME', ''));
             });
         }
@@ -181,7 +196,13 @@ class QuanLiLopOnlineController extends Controller
                 ->where('ma_ht', $request->get('ma_ht'))
                 ->update($arrayInsertHinhThuc);
             // gửi mail thông báo cập nhật hình thức dạy cho giảng viên đó
-            @Mail::send('email_template.giangvien', array('lop' => $lop, 'title' => 'Lịch phân công dạy của bạn đã bị thay đổi (Cập nhật hình thức dạy)', 'hinhthuc' => $maToTenHt[$request->get('ma_ht')]), function($message) use ($gv) {
+            $arraySendMail = ['lop' => $lop,
+                'title' => 'Lịch phân công dạy của bạn đã bị thay đổi (Cập nhật hình thức dạy)',
+                'hinhthuc' => $maToTenHt[$request->get('ma_ht')],
+                'tungay' => $tuNgaySend, 'denngay' => $tuNgaySend
+            ];
+
+            @Mail::send('email_template.giangvien', $arraySendMail, function ($message) use ($gv) {
                 $message->to($gv->email, '')->subject('Thông báo phân công lớp học online - ' . env('APP_NAME', ''));
             });
         }
@@ -192,7 +213,8 @@ class QuanLiLopOnlineController extends Controller
         return response()->json(['success' => '1', 'html' => view('admin.lop_online.ajax.giang_vien_rows', ['gvs' => $lop->GVHinhThucDay, 'maToTenHt' => $maToTenHt])->render()]);
     }
 
-    public function removeSinhVien(Request $request) {
+    public function removeSinhVien(Request $request)
+    {
         $sv = SV::where('ma_sv', $request->get('ma_sv'))->first() ?? null;
         $lop = LopMonHoc::where('ma_lop_mh', $request->get('ma_lop_mh'))->first() ?? null;
 
@@ -201,12 +223,13 @@ class QuanLiLopOnlineController extends Controller
             ->where('ma_lop_mh', $lop->ma_lop_mh)
             ->delete();
 
-        Mail::send('email_template.sinhvien', array('lop' => $lop, 'title' => 'Bạn đã bị xóa khỏi lớp học bên dưới'), function($message) use ($sv) {
+        Mail::send('email_template.sinhvien', array('lop' => $lop, 'title' => 'Bạn đã bị xóa khỏi lớp học bên dưới'), function ($message) use ($sv) {
             $message->to($sv->email, '')->subject('Thông báo lớp học online - ' . env('APP_NAME', ''));
         });
     }
 
-    public function removeGiangVien(Request $request) {
+    public function removeGiangVien(Request $request)
+    {
         $gv = GV::where('ma_gv', $request->get('ma_gv'))->first() ?? null;
         $lop = LopMonHoc::where('ma_lop_mh', $request->get('ma_lop_mh'))->first() ?? null;
 
@@ -219,7 +242,7 @@ class QuanLiLopOnlineController extends Controller
             ->where('ma_lop_mh', $lop->ma_lop_mh)
             ->delete();
 
-        Mail::send('email_template.giangvien', array('lop' => $lop, 'title' => 'Bạn đã bị xóa khỏi phân công của lớp bên dưới'), function($message) use ($gv) {
+        Mail::send('email_template.giangvien', array('lop' => $lop, 'title' => 'Bạn đã bị xóa khỏi phân công của lớp bên dưới'), function ($message) use ($gv) {
             $message->to($gv->email, '')->subject('Thông báo phân công lớp học online - ' . env('APP_NAME', ''));
         });
     }
