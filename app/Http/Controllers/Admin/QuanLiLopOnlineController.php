@@ -189,6 +189,9 @@ class QuanLiLopOnlineController extends Controller
         if (!$isExistsHt) {
             DB::table('gvlopmhhinhthucday')
                 ->insert($arrayInsertHinhThuc);
+            @Mail::send('email_template.giangvien', $arraySendMail, function ($message) use ($gv) {
+                $message->to($gv->email, '')->subject('Thông báo phân công lớp học online - ' . env('APP_NAME', ''));
+            });
         } else {
             DB::table('gvlopmhhinhthucday')
                 ->where('ma_gv', $gv->ma_gv)
