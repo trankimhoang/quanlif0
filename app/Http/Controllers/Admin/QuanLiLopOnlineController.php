@@ -214,6 +214,10 @@ class QuanLiLopOnlineController extends Controller
             ->where('ma_gv', $gv->ma_gv)
             ->where('ma_lop_mh', $lop->ma_lop_mh)
             ->delete();
+        DB::table('gvlopmhhinhthucday')
+            ->where('ma_gv', $gv->ma_gv)
+            ->where('ma_lop_mh', $lop->ma_lop_mh)
+            ->delete();
 
         Mail::send('email_template.giangvien', array('lop' => $lop, 'title' => 'Bạn đã bị xóa khỏi phân công của lớp bên dưới'), function($message) use ($gv) {
             $message->to($gv->email, '')->subject('Thông báo phân công lớp học online - ' . env('APP_NAME', ''));
