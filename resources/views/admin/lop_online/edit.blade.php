@@ -56,7 +56,8 @@
             </div>
             <div class="col-md-6">
                 <h3>Danh sách sinh viên</h3>
-                <div id="div_sinhvien_loading" style="display: none;" class="spinner-border mb-2" role="status"> <span class="sr-only">Loading...</span> </div>
+                <div id="div_sinhvien_loading" style="display: none;" class="spinner-border mb-2" role="status"><span
+                        class="sr-only">Loading...</span></div>
                 <div id="div_sinhvien" class="mb-2">
                     @if(count($lop->SV) > 0)
                         @foreach($lop->SV as $sv)
@@ -86,18 +87,17 @@
 
 
                 <h3 class="mt-5">Danh sách giảng viên</h3>
-                <div id="div_giangvien_loading" style="display: none;" class="spinner-border mb-2" role="status"> <span class="sr-only">Loading...</span> </div>
+                <div id="div_giangvien_loading" style="display: none;" class="spinner-border mb-2" role="status"><span
+                        class="sr-only">Loading...</span></div>
                 <div id="div_giangvien" class="mb-2">
                     @if(count($lop->GV) > 0)
-                        @foreach($lop->GV as $gv)
-                            @include('admin.lop_online.ajax.giangvien_row', compact('gv'))
-                        @endforeach
+                        @include('admin.lop_online.ajax.giang_vien_rows', ['gvs' => $lop->GVHinhThucDay, 'maToTenHt' => $maToTenHt])
                     @else
                         <p class="alert alert-danger" id="gv_alert_not_found">Lớp không có giảng viên</p>
                     @endif
                 </div>
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <select id="select_gv" class="select-search form-control form-select">
                                 @foreach($listGV as $gv)
@@ -105,11 +105,26 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="form-group">
+                            <select id="select_ht" class="select-search form-control form-select">
+                                @foreach($listHt as $ht)
+                                    <option value="{{ $ht->ma_ht }}">{{ $ht->ten_ht }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="tu_ngay" class="form-control" placeholder="Từ ngày...">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="den_ngay" class="form-control" placeholder="Đến ngày...">
+                        </div>
 
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-12">
                         <div class="form-group">
-                            <button class="btn btn-primary w-100" id="btn-add-gv" type="button">Thêm giảng viên</button>
+                            <button class="btn btn-primary w-50" id="btn-add-gv" type="button">Thêm/Cập nhật thông tin
+                                giảng viên
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -125,11 +140,14 @@
 
 @section('js')
     <script src="{{ asset('lib/select2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('lib/jquery-ui.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('lib/jquery-ui.min.css') }}">
+
     <script>
-        $(document).ready(function (){
+        $(document).ready(function () {
             $('#div_sinhvien_loading').hide();
 
-            $('body').on('click', '.btn-remove-sv', function (){
+            $('body').on('click', '.btn-remove-sv', function () {
                 let id = $(this).attr('data-id');
                 $(this).parent().remove();
 
@@ -146,9 +164,9 @@
                 })
             });
 
-            $('body').on('click', '.btn-remove-gv', function (){
+            $('body').on('click', '.btn-remove-gv', function () {
                 let id = $(this).attr('data-id');
-                $(this).parent().remove();
+                $(this).parents('tr').remove();
 
                 $.ajax({
                     url: @json(route('admin.ql_lop.remove_gv')),
@@ -163,11 +181,11 @@
                 })
             });
 
-            $("#select_sv, #select_gv").select2({
+            $("#select_sv, #select_gv, #select_ht").select2({
                 theme: "bootstrap"
             });
 
-            $('#btn-add-sv').click(function (){
+            $('#btn-add-sv').click(function () {
                 let id = $('#select_sv option:selected').val();
                 $('#div_sinhvien').hide();
                 $('#div_sinhvien_loading').show();
@@ -195,33 +213,51 @@
                 });
             });
 
-            $('#btn-add-gv').click(function (){
+            $('#btn-add-gv').click(function () {
                 let id = $('#select_gv option:selected').val();
                 $('#div_giangvien').hide();
                 $('#div_giangvien_loading').show();
                 $(this).prop('disabled', true);
                 $('#gv_alert_not_found').remove();
 
-                $.ajax({
-                    url: @json(route('admin.ql_lop.add_gv')),
-                    data: {
-                        ma_lop_mh: @json($lop->ma_lop_mh),
-                        ma_gv: id
-                    },
-                    method: 'GET',
-                    success: function (data) {
-                        $('#div_giangvien_loading').hide();
-                        $('#div_giangvien').show();
-                        $('#btn-add-gv').prop('disabled', false);
-
-                        if (data.success == '1') {
-                            $('#div_giangvien').append(data.html);
-                        } else {
-                            alert(data.mgs);
+                if ($('#tu_ngay').val() == '' || $('#den_ngay').val() == '') {
+                    alert('Vui lòng nhập đủ thông tin');
+                } else if (dateToTimeStamp($('#tu_ngay').val()) >= dateToTimeStamp($('#den_ngay').val())) {
+                    alert('Lỗi từ ngày phải nhỏ hơn đến ngày');
+                } else {
+                    $.ajax({
+                        url: @json(route('admin.ql_lop.add_gv')),
+                        data: {
+                            ma_lop_mh: @json($lop->ma_lop_mh),
+                            ma_gv: id,
+                            ma_ht: $('#select_ht').val(),
+                            tu_ngay: $('#tu_ngay').val(),
+                            den_ngay: $('#den_ngay').val()
+                        },
+                        method: 'GET',
+                        success: function (data) {
+                            if (data.success == '1') {
+                                $('#div_giangvien').html(data.html);
+                            } else {
+                                alert(data.mgs);
+                            }
                         }
-                    }
-                });
+                    });
+                }
+
+                $('#div_giangvien_loading').hide();
+                $('#div_giangvien').show();
+                $('#btn-add-gv').prop('disabled', false);
             });
+
+            $('#tu_ngay, #den_ngay').datepicker({dateFormat: 'dd/mm/yy'});
+
+            function dateToTimeStamp(date) {
+                date = date.split("/");
+                let newDate = new Date(date[2], date[1] - 1, date[0]);
+
+                return newDate.getTime();
+            }
         });
     </script>
 @endsection

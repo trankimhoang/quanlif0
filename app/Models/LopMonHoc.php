@@ -15,6 +15,10 @@ class LopMonHoc extends Model
         return $this->belongsToMany(GV::class, 'gvlopmh', 'ma_lop_mh', 'ma_gv');
     }
 
+    public function GVHinhThucDay() {
+        return $this->belongsToMany(GV::class, 'gvlopmhhinhthucday', 'ma_lop_mh', 'ma_gv')->withPivot(['ma_ht', 'tu_ngay', 'den_ngay']);
+    }
+
     public function SV() {
         return $this->belongsToMany(SV::class, 'svlopmonhoc', 'ma_lop_mh', 'ma_sv');
     }

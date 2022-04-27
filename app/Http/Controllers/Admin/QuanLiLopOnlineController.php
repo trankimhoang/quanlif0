@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\GV;
+use App\Models\HinhThucDay;
 use App\Models\LopMonHoc;
 use App\Models\MonHoc;
 use App\Models\SV;
@@ -27,12 +28,18 @@ class QuanLiLopOnlineController extends Controller
     }
 
     public function detailLop(Request $request) {
-        $lop =  LopMonHoc::with(['GV', 'MonHoc', 'SV'])->where('ma_lop_mh', $request->get('ma_lop_mh'))->first();
+        $lop =  LopMonHoc::with(['GV', 'MonHoc', 'SV', 'GVHinhThucDay'])->where('ma_lop_mh', $request->get('ma_lop_mh'))->first();
         $listMonHoc = MonHoc::all();
         $listSV = SV::all();
         $listGV = GV::all();
+        $listHt = HinhThucDay::all();
+        $maToTenHt = DB::table('hinhthucday')
+            ->get()
+            ->mapWithKeys(function ($item){
+                return [$item->ma_ht => $item->ten_ht];
+            })->toArray();
 
-        return view('admin.lop_online.edit', compact('lop', 'listMonHoc', 'listSV', 'listGV'));
+        return view('admin.lop_online.edit', compact('lop', 'listMonHoc', 'listSV', 'listGV', 'listHt', 'maToTenHt'));
     }
 
     public function updateLop(Request $request) {
@@ -119,29 +126,70 @@ class QuanLiLopOnlineController extends Controller
     }
 
     public function addGiangVien(Request $request) {
+        $maToTenHt = DB::table('hinhthucday')
+            ->get()
+            ->mapWithKeys(function ($item){
+                return [$item->ma_ht => $item->ten_ht];
+            })->toArray();
+
         $gv = GV::where('ma_gv', $request->get('ma_gv'))->first() ?? null;
-        $lop = LopMonHoc::where('ma_lop_mh', $request->get('ma_lop_mh'))->first() ?? null;
+        $lop = LopMonHoc::with('GVHinhThucDay')->where('ma_lop_mh', $request->get('ma_lop_mh'))->first() ?? null;
         $arrayInsert = [
             'ma_gv' => $gv->ma_gv,
             'ma_lop_mh' => $lop->ma_lop_mh
         ];
+        $tuNgay = $request->get('tu_ngay');
+        $denNgay = $request->get('den_ngay');
+
+        $tuNgay = \Carbon\Carbon::createFromFormat('d/m/Y', $tuNgay)->format('Y-m-d');
+        $denNgay = \Carbon\Carbon::createFromFormat('d/m/Y', $denNgay)->format('Y-m-d');
+
+        $arrayInsertHinhThuc = [
+            'ma_gv' => $gv->ma_gv,
+            'ma_lop_mh' => $lop->ma_lop_mh,
+            'ma_ht' => $request->get('ma_ht'),
+            'tu_ngay' => $tuNgay,
+            'den_ngay' => $denNgay,
+        ];
+
         $isExists = DB::table('gvlopmh')
             ->where('ma_gv', $gv->ma_gv)
             ->where('ma_lop_mh', $lop->ma_lop_mh)
+            ->exists();
+        $isExistsHt = DB::table('gvlopmhhinhthucday')
+            ->where('ma_gv', $gv->ma_gv)
+            ->where('ma_lop_mh', $lop->ma_lop_mh)
+            ->where('ma_ht', $request->get('ma_ht'))
             ->exists();
 
         if (!$isExists) {
             DB::table('gvlopmh')
                 ->insert($arrayInsert);
 
-            Mail::send('email_template.giangvien', array('lop' => $lop, 'title' => 'Bạn đã được phân công dạy lớp bên dưới'), function($message) use ($gv) {
+            @Mail::send('email_template.giangvien', array('lop' => $lop, 'title' => 'Bạn đã được phân công dạy lớp bên dưới', 'hinhthuc' => $maToTenHt[$request->get('ma_ht')]), function($message) use ($gv) {
                 $message->to($gv->email, '')->subject('Thông báo phân công lớp học online - ' . env('APP_NAME', ''));
             });
-
-            return response()->json(['success' => '1', 'html' => view('admin.lop_online.ajax.giangvien_row', compact('gv'))->render()]);
-        } else {
-            return response()->json(['success' => '0', 'mgs' => 'Giảng viên này đã có trong lớp rồi']);
         }
+
+        if (!$isExistsHt) {
+            DB::table('gvlopmhhinhthucday')
+                ->insert($arrayInsertHinhThuc);
+        } else {
+            DB::table('gvlopmhhinhthucday')
+                ->where('ma_gv', $gv->ma_gv)
+                ->where('ma_lop_mh', $lop->ma_lop_mh)
+                ->where('ma_ht', $request->get('ma_ht'))
+                ->update($arrayInsertHinhThuc);
+            // gửi mail thông báo cập nhật hình thức dạy cho giảng viên đó
+            @Mail::send('email_template.giangvien', array('lop' => $lop, 'title' => 'Lịch phân công dạy của bạn đã bị thay đổi (Cập nhật hình thức dạy)', 'hinhthuc' => $maToTenHt[$request->get('ma_ht')]), function($message) use ($gv) {
+                $message->to($gv->email, '')->subject('Thông báo phân công lớp học online - ' . env('APP_NAME', ''));
+            });
+        }
+
+        // get lấy dữ liệu mới
+        $lop = LopMonHoc::with('GVHinhThucDay')->where('ma_lop_mh', $request->get('ma_lop_mh'))->first() ?? null;
+
+        return response()->json(['success' => '1', 'html' => view('admin.lop_online.ajax.giang_vien_rows', ['gvs' => $lop->GVHinhThucDay, 'maToTenHt' => $maToTenHt])->render()]);
     }
 
     public function removeSinhVien(Request $request) {
