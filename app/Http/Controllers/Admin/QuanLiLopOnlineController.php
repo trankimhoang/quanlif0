@@ -48,38 +48,20 @@ class QuanLiLopOnlineController extends Controller
     {
         $dataUpdate = $request->toArray();
         $maLopMh = $request->get('ma_lop_mh') ?? null;
-        $svLopMh = $request->get('sv') ?? null;
         unset($dataUpdate['_token']);
         unset($dataUpdate['ma_lop_mh']);
         unset($dataUpdate['sv']);
         unset($dataUpdate['gv']);
 
-        foreach ($svLopMh as $key => $item) {
-            $svLopMh[$key] = [
-                'ma_sv' => $item,
-                'ma_lop_mh' => $maLopMh
-            ];
-        }
-
         try {
             DB::table('lopmonhoc')
                 ->where('ma_lop_mh', $maLopMh)
                 ->update($dataUpdate);
-            DB::table('svlopmonhoc')
-                ->where('ma_lop_mh', $maLopMh)
-                ->delete();
-            DB::table('svlopmonhoc')
-                ->insert($svLopMh);
 
             return redirect()->back()->with(['success' => 'Cập nhật lớp học [' . $maLopMh . '] thành công']);
         } catch (\Exception $exception) {
             throw $exception;
         }
-    }
-
-    public function addLop(Request $request)
-    {
-
     }
 
     public function removeLop(Request $request)
@@ -149,9 +131,6 @@ class QuanLiLopOnlineController extends Controller
         $denNgay = $request->get('den_ngay');
         $tuNgaySend = $request->get('tu_ngay');
         $denNgaySend = $request->get('den_ngay');
-
-        $tuNgay = \Carbon\Carbon::createFromFormat('d/m/Y', $tuNgay)->format('Y-m-d');
-        $denNgay = \Carbon\Carbon::createFromFormat('d/m/Y', $denNgay)->format('Y-m-d');
 
         $arrayInsertHinhThuc = [
             'ma_gv' => $gv->ma_gv,

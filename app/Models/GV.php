@@ -17,6 +17,10 @@ class GV extends Authenticatable
         return $this->hasMany(PhieuGV::class, 'ma_gv', 'ma_gv');
     }
 
+    public function LopHinhThucDay() {
+        return $this->belongsToMany(LopMonHoc::class, 'gvlopmhhinhthucday', 'ma_gv', 'ma_lop_mh')->withPivot(['ma_ht', 'tu_ngay', 'den_ngay']);
+    }
+
     public function isBenh() {
         $isBenh = false;
 

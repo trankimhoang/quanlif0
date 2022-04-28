@@ -15,6 +15,7 @@ class CreateLopmonhocTable extends Migration
     {
         Schema::create('lopmonhoc', function (Blueprint $table) {
             $table->increments('ma_lop_mh');
+            $table->string('ten');
             $table->string('id_zoom');
             $table->string('pass_zoom');
             $table->string('phong_hoc');

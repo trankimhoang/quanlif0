@@ -10,29 +10,31 @@
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th scope="col">Mã</th>
-                <th scope="col">Id zoom</th>
-                <th scope="col">Pass zoom</th>
-                <th scope="col">Phòng học</th>
-                <th scope="col">Ca học</th>
-                <th scope="col">Thứ</th>
-                <th scope="col">Host key zoom</th>
-                <th scope="col">Môn học</th>
-                <th scope="col">Hành động</th>
+                <th scope="col" nowrap>Mã</th>
+                <th scope="col" nowrap>Tên</th>
+                <th scope="col" nowrap>Id zoom</th>
+                <th scope="col" nowrap>Pass zoom</th>
+                <th scope="col" nowrap>Phòng học</th>
+                <th scope="col" nowrap>Ca học</th>
+                <th scope="col" nowrap>Thứ</th>
+                <th scope="col" nowrap>Host key zoom</th>
+                <th scope="col" nowrap>Môn học</th>
+                <th scope="col" nowrap>Hành động</th>
             </tr>
             </thead>
             <tbody>
             @foreach($listLop as $lop)
                 <tr>
-                    <td>{{ $lop->ma_lop_mh }}</td>
-                    <td>{{ $lop->id_zoom }}</td>
-                    <td>{{ $lop->pass_zoom }}</td>
-                    <td>{{ $lop->phong_hoc }}</td>
-                    <td>{{ $lop->ca_hoc }}</td>
-                    <td>{{ $lop->thu }}</td>
-                    <td>{{ $lop->host_key_zoom }}</td>
-                    <td>{{ $lop->MonHoc->ten_mh }}</td>
-                    <td>
+                    <td nowrap>{{ $lop->ma_lop_mh }}</td>
+                    <td nowrap>{{ $lop->ten }}</td>
+                    <td nowrap>{{ $lop->id_zoom }}</td>
+                    <td nowrap>{{ $lop->pass_zoom }}</td>
+                    <td nowrap>{{ $lop->phong_hoc }}</td>
+                    <td nowrap>{{ $lop->ca_hoc }}</td>
+                    <td nowrap>{{ $lop->thu }}</td>
+                    <td nowrap>{{ $lop->host_key_zoom }}</td>
+                    <td nowrap>{{ $lop->MonHoc->ten_mh }}</td>
+                    <td nowrap>
                         <form action="{{ route('admin.ql_lop.xoa') }}" method="POST" style="display: inline;">
                             @csrf
                             <input type="hidden" name="ma_lop_mh" value="{{ $lop->ma_lop_mh }}">

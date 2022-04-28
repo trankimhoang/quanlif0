@@ -17,6 +17,10 @@
                 @csrf
                 <input type="hidden" name="ma_lop_mh" value="{{ $lop->ma_lop_mh }}">
                 <div class="form-group">
+                    <label for="ten">Tên</label>
+                    <input type="text" class="form-control" name="ten" value="{{ $lop->ten }}">
+                </div>
+                <div class="form-group">
                     <label for="id_zoom">ID Zoom</label>
                     <input type="text" class="form-control" name="id_zoom" value="{{ $lop->id_zoom }}">
                 </div>
@@ -113,10 +117,10 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <input type="text" id="tu_ngay" class="form-control" placeholder="Từ ngày...">
+                            <input type="date" id="tu_ngay" class="form-control" placeholder="Từ ngày...">
                         </div>
                         <div class="form-group">
-                            <input type="text" id="den_ngay" class="form-control" placeholder="Đến ngày...">
+                            <input type="date" id="den_ngay" class="form-control" placeholder="Đến ngày...">
                         </div>
 
                     </div>
@@ -225,8 +229,14 @@
 
                 if ($('#tu_ngay').val() == '' || $('#den_ngay').val() == '') {
                     alert('Vui lòng nhập đủ thông tin');
+                    $('#div_giangvien_loading').hide();
+                    $('#div_giangvien').show();
+                    $('#btn-add-gv').prop('disabled', false);
                 } else if (dateToTimeStamp($('#tu_ngay').val()) >= dateToTimeStamp($('#den_ngay').val())) {
                     alert('Lỗi từ ngày phải nhỏ hơn đến ngày');
+                    $('#div_giangvien_loading').hide();
+                    $('#div_giangvien').show();
+                    $('#btn-add-gv').prop('disabled', false);
                 } else {
                     $.ajax({
                         url: @json(route('admin.ql_lop.add_gv')),
@@ -244,23 +254,14 @@
                             } else {
                                 alert(data.mgs);
                             }
+
+                            $('#div_giangvien_loading').hide();
+                            $('#div_giangvien').show();
+                            $('#btn-add-gv').prop('disabled', false);
                         }
                     });
                 }
-
-                $('#div_giangvien_loading').hide();
-                $('#div_giangvien').show();
-                $('#btn-add-gv').prop('disabled', false);
             });
-
-            $('#tu_ngay, #den_ngay').datepicker({dateFormat: 'dd/mm/yy'});
-
-            function dateToTimeStamp(date) {
-                date = date.split("/");
-                let newDate = new Date(date[2], date[1] - 1, date[0]);
-
-                return newDate.getTime();
-            }
         });
     </script>
 @endsection
